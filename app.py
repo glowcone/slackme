@@ -39,7 +39,7 @@ def slack_msg():
                 user = CLIENT.api_call("users.info", user=msg["user"])
                 user_name = user["user"]["profile"]["real_name_normalized"]
                 msg_text = msg["text"]
-                relay_text = "%s: %s" % (user_name, msg_text)
+                relay_text = "[%s]  %s" % (user_name, msg_text)
                 res = requests.post("%s/bots/post" % GROUPME_API, params = {"bot_id": GROUPME_BOT_ID, "text": relay_text})
         # elif event_type == "file_created":
         #     print "hihiihi"
