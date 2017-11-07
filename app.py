@@ -54,15 +54,17 @@ def groupme_msg():
     event_data = json.loads(request.data)
     if event_data["sender_type"] == "user":
         user_name = event_data["name"]
-        attach = event_data["attachments"][0]
-        if attach:
+
+        try:
+            attach = event_data["attachments"][0]
             if attach["type"] == "image":
-                CLIENT.api_call("chat.postMessage", channel=SLACK_CHANNEL, attachments=[{"text": user_name, "image_url": attach["url"]}])
-            else:
-                CLIENT.api_call("chat.postMessage", channel=SLACK_CHANNEL, text="Media type not supported yet - go on GroupMe to view it")
+              CLIENT.api_call("chat.postMessage", channel=SLACK_CHANNEL, attachments=[{"text": "%s:" % user_name, "image_url": attach["url"]}])
+        except Exception:
+            pass
+
         msg_text = event_data["text"]
         if msg_text:
-            relay_text = "%s: %s" % (user_name, msg_text)
+            relay_text = "*%s:* %s" % (user_name, msg_text)
             CLIENT.api_call("chat.postMessage", channel=SLACK_CHANNEL, text=relay_text)
 
     return make_response("", 200)
